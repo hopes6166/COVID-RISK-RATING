@@ -1,0 +1,10 @@
+﻿List of diseases,Fatal/ Severe,Non fatal,"Chance of being hospitalized, dead compare to normal COVID cases (times)"
+Obesity,42%,2%,24.4
+hypertension,40%,3%,12.6
+Diabetes,17%,3%,6.5
+Cardiovascular diseases,6%,3%,1.9
+Respiratory diseases,8%,4%,2.2
+Cerebrovascular,6%,3%,2.2
+Malignancy,4%,3%,1.5
+Kidney diseases,3%,3%,1.0
+None of the above,,,1.0
