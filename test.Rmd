@@ -1,0 +1,41 @@
+---
+title: "DAILY REPORT ON COVID 19"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+source("Rating.R")
+library(ggplot2)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A Overall COVID case per 100k population
+
+```{r}
+cond <- WHO_data$Name %in% c("United States of America", "India", "The United Kingdom", "Germany", "Brazil")
+df <- WHO_data[cond, ]
+df$Name <- as.factor(df$Name)
+ggplot(data = df, aes(x = Name, y = Cases...newly.reported.in.last.7.days.per.100000.population)) + geom_bar(stat = "identity", fill = "steelblue") + theme_minimal() + labs(x = "", y = "Number of new cases", title = "New cases per 100,000 population")
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
