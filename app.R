@@ -18,12 +18,8 @@ ui <- fluidPage(
 
 
 server <- function(input, output) {
-  Destination <- input$destination
-  LengthOfStay <- input$LengthOfStay
-  Vaccination <- ifelse(input$Vaccination == "Yes", TRUE, FALSE)
-  Conditions <- input$Condition
   output$summary <- renderText({ 
-    paste("You are going to", Destination, "for", input$LengthOfStay, "days.Your vaccination status:", input$Vacinnation, ". Your pre-existing condition: ", input$Condition)
+    paste("You are going to", Destination, "for", input$LengthOfStay, "days. Are you vaccinated:", input$Vacinnation,". Your pre-existing condition: ", input$Condition)
   })
 }
 shinyApp(ui = ui, server = server)
