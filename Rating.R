@@ -22,50 +22,28 @@ WHO_data$ContractRatePD <- WHO_data$Cases...cumulative.total.per.100000.populati
 WHO_data$DeathRatePD <- WHO_data$Deaths...cumulative.total.per.100000.population/100000/DateFromCovidTime
 
 
-ProbabilityCOVIDFirst7PD <- filter(WHO_data, Name == Destination)[, "ContractRatePerFirst7PD"]
-ProbabilityCOVIDRemainingDayPD <- filter(WHO_data, Name == Destination)[, "ContractRatePD"]
-PofCOVID <- ifelse(LengthOfStay > 7, ProbabilityCOVIDRemainingDayPD * (LengthOfStay - 7) + ProbabilityCOVIDFirst7PD * 7, ProbabilityCOVIDFirst7PD * LengthOfStay)
-
-ConsonanceMultiple <- filter(Consonance, Consonance$List.of.diseases == Conditions)[, 4]
-ActualPofCOVID <- ifelse(Vaccination, PofCOVID*(1 - VaccineOnTransmission), PofCOVID)
-
-
-Age <- floor(as.numeric(Sys.Date() - as.Date(DateOfBirth))/365.25)
-HospitalizationLength <- as.numeric(approx(RateOfCOVID$Age, RateOfCOVID[, 4], Age, method = "constant")[2])
-
-DeathRatePD <- filter(WHO_data, Name == Destination)[, "DeathRatePD"]
-DeathRate <- (ifelse(Vaccination, DeathRatePD * LengthOfStay * (1- VaccineOnDeath), DeathRatePD * LengthOfStay))*ConsonanceMultiple
-
-# Expected Medical Cost if getting COVID
-EM <- filter(MedicalCost, Country == Destination)[, 3] * HospitalizationLength
-
-# Expected PCV medical cost payment if having COVID 
-EPP <- ifelse(EM/ HospitalizationLength > 852, 852 * LengthOfStay, EM)
-# Expected PCV repatriation cost if death
-EPR <- 2553
-
-
 Rating <- function(DateOfBirth, Destination, LengthOfStay, Vaccinated, Condition) {
   ProbabilityCOVIDFirst7PD <- filter(WHO_data, Name == Destination)[, "ContractRatePerFirst7PD"]
   ProbabilityCOVIDRemainingDayPD <- filter(WHO_data, Name == Destination)[, "ContractRatePD"]
   PofCOVID <- ifelse(LengthOfStay > 7, ProbabilityCOVIDRemainingDayPD * (LengthOfStay - 7) + ProbabilityCOVIDFirst7PD * 7, ProbabilityCOVIDFirst7PD * LengthOfStay)
-  
-  ConsonanceMultiple <- filter(Consonance, Consonance$List.of.diseases == Conditions)[, 4]
-  ActualPofCOVID <- ifelse(Vaccination, PofCOVID*(1 - VaccineOnTransmission), PofCOVID)
+  PofCOVID <- ifelse(PofCOVID > 1, 1, PofCOVID)
+  ConsonanceMultiple <- filter(Consonance, Consonance$List.of.diseases == Condition)[, 4]
+  ActualPofCOVID <- ifelse(Vaccinated, PofCOVID*(1 - VaccineOnTransmission), PofCOVID)
   
   Age <- floor(as.numeric(Sys.Date() - as.Date(DateOfBirth))/365.25)
-  HospitalizationLength <- as.numeric(approx(RateOfCOVID$Age, RateOfCOVID[, 4], Age, method = "constant")[2])
+  HospitalizationLength <- as.numeric(approx(RateOfCOVID$Age, RateOfCOVID[, 4], Age, method = "constant", yleft = 2, yright = 7.5)[2])
   
   # Death Rate Per day at the Destination
   DeathRatePD <- filter(WHO_data, Name == Destination)[, "DeathRatePD"]
   # Death Rate
-  DeathRate <- (ifelse(Vaccination, DeathRatePD * LengthOfStay * (1- VaccineOnDeath), DeathRatePD * LengthOfStay))*ConsonanceMultiple
+  DeathRate <- (ifelse(Vaccinated, DeathRatePD * LengthOfStay * (1- VaccineOnDeath), DeathRatePD * LengthOfStay))*ConsonanceMultiple
   
   # Expected Medical Cost if getting COVID
   EM <- filter(MedicalCost, Country == Destination)[, 3] * HospitalizationLength
   
   # Expected PCV medical cost payment if having COVID 
   EPP <- ifelse(EM/ HospitalizationLength > 852, 852 * LengthOfStay, EM)
+  EPP <- ifelse(EPP <85106, EPP, 85106 )
   
   # Expected PCV repatriation cost if death
   EPR <- 2553
