@@ -38,18 +38,37 @@ server <- function(input, output) {
   })
   
   output$barplot1 <- renderPlot({
-    x1 <- Rating("01-01-1990", "Global", 30, FALSE, "None of the above")
-    x2 <- Rating(input$date, input$destination, input$LengthOfStay, ifelse(input$Vacinnation== "Yes", TRUE, FALSE), input$Condition)
-    x3 <- Rating("01-01-1990", "Viet Nam", 30, FALSE, "None of the above")
-    data <- data.frame(value = round(100*c(x1$ActualPofCOVID, x2$ActualPofCOVID, x3$ActualPofCOVID), digits = 2), name = c("Global- 30 years old- 30 days trip", "Your trip", "Vietnam - 30 years old - 30 days trip"))
-    barplot(height = data$value, 
-            name = data$name, 
+    x11 <- Rating("01-01-1990", "Global", 30, TRUE, "None of the above")
+    x12 <- Rating("01-01-1990", input$destination, 30, TRUE, "None of the above")
+    x13 <- Rating("01-01-1990", "Viet Nam", 30, TRUE, "None of the above")
+    
+    x21 <- Rating(input$date, "Global", input$LengthOfStay, ifelse(input$Vacinnation== "Yes", TRUE, FALSE), input$Condition)
+    x22 <- Rating(input$date, input$destination, input$LengthOfStay, ifelse(input$Vacinnation== "Yes", TRUE, FALSE), input$Condition)
+    x23 <- Rating(input$date, "Viet Nam", input$LengthOfStay, ifelse(input$Vacinnation== "Yes", TRUE, FALSE), input$Condition)
+    
+    x31 <- Rating("01-01-1990", "Global", 30, FALSE, "None of the above")
+    x32 <- Rating("01-01-1990", input$destination, 30, FALSE, "None of the above")
+    x33 <- Rating("01-01-1990", "Viet Nam", 30, FALSE, "None of the above")
+    
+    data <- data.frame(value = round(100*c(x1$ActualPofCOVID, x2$ActualPofCOVID, x3$ActualPofCOVID), digits = 2), 
+                       name = c("Global- 30 years old- 30 days trip", "Your trip", "Vietnam - 30 years old - 30 days trip"))
+    
+    data1 <- data.frame(Global = 100* c(x11$ActualPofCOVID, x21$ActualPofCOVID, x31$ActualPofCOVID),
+                        YourTrip = 100 * c(x12$ActualPofCOVID, x22$ActualPofCOVID, x32$ActualPofCOVID),
+                        Vietnam = 100 * c(x13$ActualPofCOVID, x23$ActualPofCOVID, x33$ActualPofCOVID))
+    data1 <- as.matrix(data1)
+    bp <- barplot(data1,
+                  main = "Probablity of COVID-19 infection by Area, Age and Vaccination status",
+            beside = TRUE,
             width = 0.05, 
             xlab = "Country",
-            ylab = "Probability of Contracting COVID-19 (%)",
-            col = "#FFCCCB",
+            ylab = "Probability(%)",
+            legend = c("Vaccinated 30 year old", "Your case", "Unvaccinated 30 year old"),
+            args.legend = list(title = "Adjustment by age and vaccination", x = "topright", cex = .7),
+            col = c("lightblue", "lavender", "mistyrose"),
             las = 1
             )
+    text(bp, 0, round(data1, 2), cex = 1, pos = 3)
   })
   
 }
