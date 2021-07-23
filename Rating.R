@@ -42,8 +42,8 @@ Rating <- function(DateOfBirth, Destination, LengthOfStay, Vaccinated, Condition
   EM <- filter(MedicalCost, Country == Destination)[, 3] * HospitalizationLength
   
   # Expected PCV medical cost payment if having COVID 
-  EPP <- ifelse(EM/ HospitalizationLength > 852, 852 * LengthOfStay, EM)
-  EPP <- ifelse(EPP <85106, EPP, 85106 )
+  EPP <- ifelse(EM/ HospitalizationLength > 852, 852 * HospitalizationLength, EM)
+  
   
   # Expected PCV repatriation cost if death
   EPR <- 2553

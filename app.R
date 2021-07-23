@@ -5,17 +5,20 @@ library(leaflet)
 source("Rating.R")
 
 ui <- fluidPage(
+  titlePanel("COVID 19 Underwriting tool"),
+  sidebarLayout(
+    sidebarPanel(
   dateInput(
   inputId = "date", label = "Date of Birth"),
   selectInput(inputId = "destination", label = "Destination", choices = WHO_data$Name),
   numericInput(inputId = "LengthOfStay", label = "Length of stay", value =  10, min = 1, max = 180),
   selectInput(inputId = "Vacinnation", label = "Vaccinated?", choices = c("Yes", "No")),
-  selectInput(inputId = "Condition", label = "Which condition(s) do you have?", choices = Consonance$List.of.diseases),
+  selectInput(inputId = "Condition", label = "Which condition(s) do you have?", choices = Consonance$List.of.diseases)),
   mainPanel(
     verbatimTextOutput("summary"),
     plotOutput("barplot1"),
     plotOutput("barplot2")
-  ))
+  )))
 
 
 
@@ -44,7 +47,7 @@ server <- function(input, output) {
             width = 0.05, 
             xlab = "Country",
             ylab = "Probability of Contracting COVID-19 (%)",
-            col = "#69b3a2",
+            col = "#FFCCCB",
             las = 1
             )
   })
