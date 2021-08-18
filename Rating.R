@@ -2,6 +2,8 @@
 source("PersonalInformation.R")
 source("VaccineEffective.R")
 library(dplyr)
+library(readr)
+
 
   #OECD Name list
 OtherOECD <- read.csv("OtherOECD.csv", header = FALSE)
@@ -11,13 +13,17 @@ MedicalCost <- read.csv("MedicalCost.csv")
   # Number of days from 1-1-2020
 DateFromCovidTime <-as.numeric(Sys.Date() - as.Date("2020-01-01"))
 
-  # Import data from WHO
-WHO_data <- read.csv("https://covid19.who.int/WHO-COVID-19-global-table-data.csv")
+  # Import data from WHO # Fix the problem because of extra comma in WHO data from 24 July 2021
+file <- "https://covid19.who.int/WHO-COVID-19-global-table-data.csv"
+rows <- readLines(file)
+rows[2] <- gsub(",$", "", rows[2])
+WHO_data  <- read.csv(text=rows)
+
   # Rate of covid import
-RateOfCOVID <- read.csv("RateofCOVID.csv")
+RateOfCOVID <- read.csv("RateOfCOVID.csv")
 
   # Create new features: contract rate per first 7 days, contract rate per day and death rate per day
-WHO_data$ContractRatePerFirst7PD <- WHO_data$Cases...newly.reported.in.last.7.days.per.100000.population/100000/DateFromCovidTime
+WHO_data$ContractRatePerFirst7PD <- WHO_data$Cases...newly.reported.in.last.7.days.per.100000.population/100000/7
 WHO_data$ContractRatePD <- WHO_data$Cases...cumulative.total.per.100000.population/100000/DateFromCovidTime
 WHO_data$DeathRatePD <- WHO_data$Deaths...cumulative.total.per.100000.population/100000/DateFromCovidTime
 

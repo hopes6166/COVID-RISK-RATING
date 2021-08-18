@@ -5,19 +5,25 @@ library(leaflet)
 source("Rating.R")
 
 ui <- fluidPage(
-  titlePanel("COVID 19 Underwriting tool"),
+  titlePanel(title = div(img(src = "PCVLogo.png" , height = 40, width = 120), "Reactive COVID-19 Underwriting Tool")),
   sidebarLayout(
     sidebarPanel(
   dateInput(
-  inputId = "date", label = "Date of Birth"),
-  selectInput(inputId = "destination", label = "Destination", choices = WHO_data$Name),
-  numericInput(inputId = "LengthOfStay", label = "Length of stay", value =  10, min = 1, max = 180),
+  inputId = "date", label = "Date of Birth:"),
+  selectInput(inputId = "destination", label = "Destination:", choices = WHO_data$Name),
+  numericInput(inputId = "LengthOfStay", label = "Length of stay(days):", value =  10, min = 1, max = 180),
   selectInput(inputId = "Vacinnation", label = "Vaccinated?", choices = c("Yes", "No")),
-  selectInput(inputId = "Condition", label = "Which condition(s) do you have?", choices = Consonance$List.of.diseases)),
+  selectInput(inputId = "Condition", label = "Which condition do you have from the following?", choices = Consonance$List.of.diseases)),
   mainPanel(
-    verbatimTextOutput("summary"),
-    plotOutput("barplot1"),
-    plotOutput("barplot2")
+    tabsetPanel(
+      type = "tabs",
+      tabPanel("Plots and Statistics",
+        verbatimTextOutput("summary"),
+        plotOutput("barplot1"),
+        plotOutput("barplot2")
+      ),
+      tabPanel("Information", includeHTML("List of assumptions.html"))
+    )
   )))
 
 
@@ -69,7 +75,7 @@ server <- function(input, output) {
                    col = c("lightblue", "lavender", "mistyrose"),
                    las = 1
     )
-    text(bp1, 0, round(data1, 2), cex = 1, pos = 3)
+    text(bp1, 0, round(data1, 2), cex = 0.7, pos = 3)
   })
   
   output$barplot2 <- renderPlot({
@@ -98,13 +104,13 @@ server <- function(input, output) {
                    beside = TRUE,
                    width = 0.05, 
                    xlab = "Country",
-                   ylab = "Pure Premium",
+                   ylab = "Pure Premium (USD)",
                    legend = c("Vaccinated 30 year old", "Your case", "Unvaccinated 30 year old"),
                    args.legend = list(title = "Adjustment by age and vaccination", x = "topright", cex = 1.2),
                    col = c("lightblue", "lavender", "mistyrose"),
                    las = 1
     )
-    text(bp1, 0, round(data1, 2), cex = 1, pos = 3)
+    text(bp1, 0, round(data1, 2), cex = 0.7, pos = 3)
   })
 }
 shinyApp(ui = ui, server = server)

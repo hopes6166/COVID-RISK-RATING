@@ -1,0 +1,12 @@
+name: COVIDRISKRATING
+title: COVIDRISKRATING
+username:
+account: hopes6166
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4414940
+bundleId: 4848818
+url: https://hopes6166.shinyapps.io/COVIDRISKRATING/
+when: 1627033809.27455
+asMultiple: FALSE
+asStatic: FALSE
