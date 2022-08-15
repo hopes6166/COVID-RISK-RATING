@@ -66,7 +66,7 @@ server <- function(input, output) {
     output$summary <- renderText({
       rate <- Rating(input$date, input$destination, input$LengthOfStay, ifelse(input$Vacinnation== "Yes", TRUE, FALSE), input$Condition)
       paste("STATISTICS" ,
-            sprintf("Your Probability of contracting COVID 19: %f",rate$ActualPofCOVID),
+            sprintf("Your Probability of infecting COVID 19: %f",rate$ActualPofCOVID),
             "If having COVID-19: ",
             sprintf("- Expected Length of Hospitalization (in case of COVID): %f", rate$HospitalizationLength),
             sprintf("- Expected Probability of Death: %f", rate$DeathRate),
